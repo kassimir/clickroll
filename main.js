@@ -195,7 +195,7 @@ const cancelRollSet = () => {
 }
 
 function rollTheDice(name) {
-  if (ROLL_CONTAINER.children.length) ROLL_CONTAINER.removeChild(ROLL_CONTAINER.children[0])
+  if (ROLL_CONTAINER.children.length) Array.from(ROLL_CONTAINER.children).forEach(child => ROLL_CONTAINER.removeChild(child))
   let total = 0
   ROLLSETS[name].forEach( source => {
     const src = create('div')
