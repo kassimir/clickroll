@@ -4,7 +4,7 @@ button {
   margin: 10px
 }
 
-#roll-container {
+#roll-set-container {
   top: 45px;
   border-right: 1px solid;
   border-top: none;
@@ -13,7 +13,7 @@ button {
 }
 
 
-#roll-container, #new-roll-set {
+#roll-set-container, #new-roll-set {
   position: absolute;
   left: 0;
   bottom: 0;
@@ -22,7 +22,6 @@ button {
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  padding-top: 10px;
 }
 
 #new-roll-set {
@@ -50,14 +49,23 @@ button {
   background-color: cadetblue;
 }
 
-.roll-set {
-  width: 90%;
-  height: 200px;
-  border: 1px solid tomato;
-  overflow: auto;
+.fas {
+  font-size: 150%;
+  margin-top: 5px;
+}
+
+.roll-buttons {
+  margin: 0;
+  border: none;
+  cursor: pointer;
+}
+
+.roll-buttons:hover {
+  opacity: .5;
 }
 
 .damage-source {
+  margin-top: 20px;
   width: 300px;
 }
 
@@ -67,6 +75,7 @@ button {
   border-left: none;
   border-right: none;
   border-top: none;
+  margin-left: 20px;
 }
 
 .rt-disabled {
