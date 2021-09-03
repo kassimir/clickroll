@@ -1,0 +1,86 @@
+button {
+  cursor: pointer;
+  outline: none;
+  margin: 10px
+}
+
+#roll-container {
+  top: 45px;
+  border-right: 1px solid;
+  border-top: none;
+  border-left: none;
+  border-bottom: none;
+}
+
+
+#roll-container, #new-roll-set {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 400px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  padding-top: 10px;
+}
+
+#new-roll-set {
+  z-index: 2;
+  top: 0;
+  background-color: bisque;
+}
+
+#add-roll-set {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 400px;
+  height: 35px;
+  cursor: pointer;
+  background-color: aqua;
+  text-align: center;
+  padding: 5px 0;
+  font-size: 25px;
+  border-right: 1px solid black;
+  overflow: auto;
+}
+
+#add-roll-set:hover {
+  background-color: cadetblue;
+}
+
+.roll-set {
+  width: 90%;
+  height: 200px;
+  border: 1px solid tomato;
+  overflow: auto;
+}
+
+.damage-source {
+  width: 300px;
+}
+
+.tiny-input {
+  width: 18px;
+  outline: none;
+  border-left: none;
+  border-right: none;
+  border-top: none;
+}
+
+.rt-disabled {
+  border: none;
+  outline: none;
+  font-size: 22px;
+}
+
+.ds-disabled {
+  border: none;
+  outline: none;
+}
+
+.dr-disabled {
+  border: none;
+  outline: none;
+}
