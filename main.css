@@ -17,7 +17,7 @@ button {
   position: absolute;
   left: 0;
   bottom: 0;
-  width: 400px;
+  width: 700px;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -34,7 +34,7 @@ button {
   position: absolute;
   top: 0;
   left: 0;
-  width: 400px;
+  width: 700px;
   height: 35px;
   cursor: pointer;
   background-color: aqua;
@@ -47,6 +47,15 @@ button {
 
 #add-roll-set:hover {
   background-color: cadetblue;
+}
+
+#roll-container {
+  position: absolute;
+  left: 700px;
+  top: 0;
+  right: 0;
+  height: 300px;
+  border-bottom: 1px solid black;
 }
 
 .fas {
@@ -78,18 +87,14 @@ button {
   margin-left: 20px;
 }
 
-.rt-disabled {
-  border: none;
-  outline: none;
-  font-size: 22px;
+.roll-that-shit {
+  border: 1px solid black;
+  width: 125px;
+  text-align: center;
+  padding: 5px;
+  cursor: pointer;
 }
 
-.ds-disabled {
-  border: none;
-  outline: none;
-}
-
-.dr-disabled {
-  border: none;
-  outline: none;
+.roll-that-shit:hover {
+  background-color: cornflowerblue;
 }

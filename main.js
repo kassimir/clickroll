@@ -42,6 +42,8 @@ const create = (ele, attrs, listeners) => {
   }
   return e
 }
+// Builds an array dice rolls
+const roll = (max, times = 1) => new Array(times).fill(0).map( _ => Math.floor(Math.random() * max) + 1 )
 
 // appends multiple elements to a single node
 const appendChildren = (parent, ...children) => {
@@ -79,7 +81,7 @@ const addRollSet = () => {
   const newRollSet = create('div')
   newRollSet.id = 'new-roll-set'
   // Name the roll set
-  const rollSetName = create('input', {width: '375px', height: '35px', paddingLeft: '20px'})
+  const rollSetName = create('input', {width: '675px', height: '35px', paddingLeft: '20px'})
   rollSetName.id = 'roll-set-name'
   rollSetName.type = 'text'
   rollSetName.placeholder = 'Name of Roll Set'
@@ -155,27 +157,31 @@ const saveRollSet = () => {
     infospan.textContent = 'Please add a damage source or click "Cancel"'
     return
   }
-  const rollSet = create('div', {width: '90%', padding: '10px', margin: '10px', border: '1px solid tomato'})
-  const rollSetName = create('span', {display: 'block', fontSize: '150%', fontWeight: 'bold'})
+  const rollSet = create('div', {width: '90%', padding: '10px', margin: '10px', border: '1px solid black'})
+  const titleDiv = create('div', {display: 'flex', justifyContent: 'space-between'})
+  const rollSetName = create('span', {fontSize: '150%', fontWeight: 'bold'})
   rollSetName.textContent = name
   rollSet.appendChild(rollSetName)
-
+  const rollButton = create('div', {class: 'roll-that-shit'})
+  rollButton.textContent = 'ROLL'
+  rollButton.onclick = () => rollTheDice(name)
+  appendChildren(titleDiv, rollSetName, rollButton)
+  rollSet.appendChild(titleDiv)
+  ROLLSETS[name] = []
   Array.from(rollSetData).forEach( source => {
     const [
         title,
         die,
-        sides
+        sides,
+        // modifiers
     ] = qs(source, '.damage-input', '.num-input', '.sides-input')
-    if (!title || !die || !sides) {
-      infospan.textContent = 'You did something wrong.'
-      return
-    }
     const rollSetDmgSrc = create('span', {display: 'block', fontSize: '120%'})
     rollSetDmgSrc.textContent = title.value || 'Blank'
     const rollSetDieNum = create('span')
     rollSetDieNum.textContent = `${die.value || 'Blank'}d`
     const rollSetDieSides = create('span', {marginBottom: '8px'})
     rollSetDieSides.textContent = sides.value || 'Blank'
+    ROLLSETS[name].push({title: title.value, die: die.value, sides: sides.value})
     appendChildren(rollSet, rollSetDmgSrc, rollSetDieNum, rollSetDieSides)
   })
   ROLL_SET_CONTAINER.appendChild(rollSet)
@@ -186,4 +192,24 @@ const saveRollSet = () => {
 const cancelRollSet = () => {
   const n = q('#new-roll-set')
   if (n) n.parentElement.removeChild(n)
+}
+
+function rollTheDice(name) {
+  if (ROLL_CONTAINER.children.length) ROLL_CONTAINER.removeChild(ROLL_CONTAINER.children[0])
+  let total = 0
+  ROLLSETS[name].forEach( source => {
+    const src = create('div')
+    src.textContent = source.title
+    const die = create('div')
+    die.textContent = `${source.die}d${source.sides}`
+    const amt = create('div')
+    const rollArray = roll(+source.sides, +source.die)
+    const rollReduced = rollArray.reduce( (p,c) => p + c)
+    amt.textContent = `${rollArray.toString().split(',').join('+')} = ${rollReduced}`
+    total += rollReduced
+    appendChildren(ROLL_CONTAINER, src, die, amt)
+  })
+  const totalDisplay = create('div')
+  totalDisplay.textContent = `Total roll: ${total}`
+  ROLL_CONTAINER.appendChild(totalDisplay)
 }
