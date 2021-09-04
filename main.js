@@ -80,7 +80,7 @@ const addRollSet = () => {
   if (q('#new-roll-set')) return
 
   // Container for new roll set
-  const newRollSet = create('div')
+  const newRollSet = create('div', {transform: 'translateX(-700px)'})
   newRollSet.id = 'new-roll-set'
   // Name the roll set
   const rollSetName = create('input', {width: '675px', height: '35px', paddingLeft: '20px'})
@@ -89,10 +89,7 @@ const addRollSet = () => {
   rollSetName.placeholder = 'Name of Roll Set'
   // Container for buttons
   const buttonDiv = create('div', {width: '100%', height: '35px', display: 'flex'})
-  const addDamageSourceButton = create('div', {width: '40%', height: '35px', textAlign: 'center', class: 'roll-buttons', backgroundColor: 'darksalmon'})
-  addDamageSourceButton.onclick = () => addDamageSource(newRollSet)
-  addDamageSourceButton.addIcon('plus')
-  const saveRollSetButton = create('div', {width: '40%', height: '35px', textAlign: 'center', class: 'roll-buttons', backgroundColor: 'darkseagreen'})
+  const saveRollSetButton = create('div', {width: '80%', height: '35px', textAlign: 'center', class: 'roll-buttons', backgroundColor: 'darkseagreen'})
   saveRollSetButton.onclick = () => saveRollSet()
   saveRollSetButton.addIcon('save')
   const cancelRollSetButton = create('div', {width: '20%', height: '35px', textAlign: 'center', class: 'roll-buttons', backgroundColor: 'tomato'})
@@ -103,40 +100,49 @@ const addRollSet = () => {
   const infoSpan = create('span')
   infoSpan.id = 'infospan'
   infoDiv.appendChild(infoSpan)
-  addDamageSourceButton.onmouseenter = () => infoSpan.textContent = 'Add Damage Source'
-  saveRollSetButton.onmouseenter = () => infoSpan.textContent = 'Save Roll Set'
-  cancelRollSetButton.onmouseenter = () => infoSpan.textContent = 'Cancel'
-  buttonDiv.onmouseleave = () => infoSpan.textContent = ''
-  newRollSet.appendChild(rollSetName)
-  appendChildren(buttonDiv, addDamageSourceButton, saveRollSetButton, cancelRollSetButton)
-  appendChildren(newRollSet, buttonDiv, infoDiv)
+  const damageSourceDiv = create('div', {width: '100%', display: 'flex', flexDirection: 'row'})
+  const addDamageSourceButton = create('div', {width: '100%', height: '35px', textAlign: 'center', class: ['roll-buttons', 'add-buttons'], backgroundColor: 'darksalmon', borderRight: '1px solid black'})
+  addDamageSourceButton.onclick = () => addDamageSource(newRollSet)
+  addDamageSourceButton.innerHTML = `<span>Damage</span>`
+  const addModifierButton = create('div', {width: '100%', height: '35px', textAlign: 'center', class: ['roll-buttons', 'add-buttons'], backgroundColor: 'darksalmon'})
+  addModifierButton.innerHTML = `<span>Modifier</span>`
+  appendChildren(damageSourceDiv, addDamageSourceButton, addModifierButton)
+  appendChildren(buttonDiv, saveRollSetButton, cancelRollSetButton)
+  appendChildren(newRollSet, buttonDiv, rollSetName, damageSourceDiv)
   BODY.appendChild(newRollSet)
+  // Custom animation
+  const animate = setInterval(() => {
+    let t = parseInt(newRollSet.style.transform.slice(11), 10) + 10
+    if (t >= 0) {
+      clearInterval(animate)
+      t = 0
+    }
+    newRollSet.style.transform = `translateX(${t}px)`
+  }, 7)
 }
 
 // Add damage source div
 const addDamageSource = (rollSetContainer) => {
   // Container for entire thing
-  const dmgContainer = create('div', {class: 'damage-source', width: '100%', height: '55px', display: 'flex', flexDirection: 'column', alignItems: 'center'})
+  const dmgContainer = create('div', {class: 'damage-source', width: '100%', height: '55px', display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'})
   // Title of damage
-  const dmgTitle = create('input', {class: 'damage-input', type: 'text', display: 'block', width: '95%', height: '22px'})
+  const dmgTitle = create('input', {class: 'damage-input', type: 'text', width: '45%', height: '22px'})
   dmgTitle.placeholder = 'Damage Source'
-  // Number of die div
-  const dieNumDiv = create('div')
   // Number of die text
   const dieNumTxt = create('span')
-  dieNumTxt.textContent = 'Number of die'
+  dieNumTxt.textContent = 'Die'
   // Number of die input
   const dieNumInput = create('input', {class: ['tiny-input', 'num-input']})
-  appendChildren(dieNumDiv, dieNumTxt, dieNumInput)
-  // Number of sides div
-  const dieSidesDiv = create('div')
+  dieNumInput.placeholder = '#'
   // Number of sides text
   const dieSidesTxt = create('span')
-  dieSidesTxt.textContent = 'Number of sides'
+  dieSidesTxt.textContent = 'Sides'
   // Number of sides input
   const dieSidesInput = create('input', {class: ['tiny-input', 'sides-input']})
-  appendChildren(dieSidesDiv, dieSidesTxt, dieSidesInput)
-  appendChildren(dmgContainer, dmgTitle, dieNumDiv, dieSidesDiv)
+  dieSidesInput.placeholder = '#'
+  const cancelElement = create('div')
+  cancelElement.addIcon('times')
+  appendChildren(dmgContainer, dmgTitle, dieNumTxt, dieNumInput, dieSidesTxt, dieSidesInput, cancelElement)
 
   rollSetContainer.appendChild(dmgContainer)
 }
@@ -151,7 +157,7 @@ const saveRollSet = () => {
   const name = q('#roll-set-name').value
 
   if (!name) {
-    infospan.textContent = 'Please name your roll set. It\'s at the top'
+    infospan.textContent = 'Please name your roll set.'
     return
   }
   const rollSetData = nrs.querySelectorAll('.damage-source')
@@ -201,9 +207,12 @@ function rollTheDice(name) {
   if (ROLL_CONTAINER.children.length) Array.from(ROLL_CONTAINER.children).forEach(child => ROLL_CONTAINER.removeChild(child))
   // Total of all rolls and modifiers
   let total = 0
+  // Start of the history input
   const history = {[name]: []}
+  // Loop through roll set dice to roll them
   ROLLSETS[name].forEach( source => {
-    const src = create('div')
+    const rollSection = create('div', {class: 'roll-section'})
+    const src = create('div', {class: 'roll-section_title'})
     src.textContent = source.title
     const die = create('div')
     die.textContent = `${source.die}d${source.sides}`
@@ -213,11 +222,11 @@ function rollTheDice(name) {
     amt.textContent = `${rollArray.toString().split(',').join('+')} = ${rollReduced}`
     total += rollReduced
     history[name].push({[source.title]: {rolls: rollArray, total: rollReduced}})
-    appendChildren(ROLL_CONTAINER, src, die, amt)
+    appendChildren(rollSection, src, die, amt)
+    ROLL_CONTAINER.appendChild(rollSection)
   })
   ROLLHISTORY.push(history)
-  console.log(ROLLHISTORY)
-  const totalDisplay = create('div')
-  totalDisplay.textContent = `Total roll: ${total}`
+  const totalDisplay = create('div', {class: ['roll-section', 'roll-total']})
+  totalDisplay.textContent = total
   ROLL_CONTAINER.appendChild(totalDisplay)
 }
