@@ -56,6 +56,31 @@ button {
   right: 0;
   height: 300px;
   border-bottom: 1px solid black;
+  display: flex;
+  flex-direction: row;
+}
+
+.roll-section {
+  display: flex;
+  flex-direction: column;
+  border-left: 1px solid thistle;
+  width: 100%;
+}
+
+.roll-section:first-of-type {
+  border-left: none;
+}
+
+.roll-section_title {
+  height: 22px;
+  background-color: rebeccapurple;
+}
+
+.roll-total {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 170px;
 }
 
 .fas {
@@ -73,6 +98,10 @@ button {
   opacity: .5;
 }
 
+.add-buttons {
+  font-size: 200%;
+}
+
 .damage-source {
   margin-top: 20px;
   width: 300px;
@@ -81,9 +110,6 @@ button {
 .tiny-input {
   width: 18px;
   outline: none;
-  border-left: none;
-  border-right: none;
-  border-top: none;
   margin-left: 20px;
 }
 
