@@ -72,6 +72,8 @@ const BODY = q('body')
 
 // ROLL SET CONSTANT
 const ROLLSETS = {}
+// ROLL SET HISTORY
+const ROLLHISTORY = []
 
 // Add roll set div
 const addRollSet = () => {
@@ -195,8 +197,11 @@ const cancelRollSet = () => {
 }
 
 function rollTheDice(name) {
+  // Clear previous roll (if there is one)
   if (ROLL_CONTAINER.children.length) Array.from(ROLL_CONTAINER.children).forEach(child => ROLL_CONTAINER.removeChild(child))
+  // Total of all rolls and modifiers
   let total = 0
+  const history = {[name]: []}
   ROLLSETS[name].forEach( source => {
     const src = create('div')
     src.textContent = source.title
@@ -207,8 +212,11 @@ function rollTheDice(name) {
     const rollReduced = rollArray.reduce( (p,c) => p + c)
     amt.textContent = `${rollArray.toString().split(',').join('+')} = ${rollReduced}`
     total += rollReduced
+    history[name].push({[source.title]: {rolls: rollArray, total: rollReduced}})
     appendChildren(ROLL_CONTAINER, src, die, amt)
   })
+  ROLLHISTORY.push(history)
+  console.log(ROLLHISTORY)
   const totalDisplay = create('div')
   totalDisplay.textContent = `Total roll: ${total}`
   ROLL_CONTAINER.appendChild(totalDisplay)
